@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteTree.Contexts;
 
 namespace NoteTree.Migrations
 {
     [DbContext(typeof(TreeDocumentContext))]
-    partial class TreeDocumentContextModelSnapshot : ModelSnapshot
+    [Migration("20210707021444_AddedDocTreeProp")]
+    partial class AddedDocTreeProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

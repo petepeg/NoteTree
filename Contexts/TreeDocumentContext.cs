@@ -14,5 +14,6 @@ namespace NoteTree.Contexts
         {
         }
         public DbSet<TreeDocument> TreeDocuments { get; set; }
+        public DbSet<DocNode> DocNodes { get; set; }
     }
 }

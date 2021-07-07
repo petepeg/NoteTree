@@ -89,12 +89,19 @@ namespace NoteTree.Controllers
         public async Task<IActionResult> DeleteTreeDocument(long id)
         {
             var treeDocument = await _context.TreeDocuments.FindAsync(id);
-            if (treeDocument == null)
+            var docNodes =  await _context.DocNodes.Where(x => x.TreeDocumentId == id).ToListAsync();
+            if(treeDocument == null)
             {
                 return NotFound();
             }
 
             _context.TreeDocuments.Remove(treeDocument);
+
+            foreach(var node in docNodes)
+            {
+                _context.DocNodes.Remove(node);
+            }
+
             await _context.SaveChangesAsync();
 
             return NoContent();
