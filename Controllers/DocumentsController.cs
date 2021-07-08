@@ -12,27 +12,27 @@ namespace NoteTree.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TreeDocumentsController : ControllerBase
+    public class DocumentsController : ControllerBase
     {
-        private readonly TreeDocumentContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public TreeDocumentsController(TreeDocumentContext context)
+        public DocumentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/TreeDocuments
+        // GET: api/Documents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TreeDocument>>> GetTreeDocuments()
+        public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
         {
-            return await _context.TreeDocuments.ToListAsync();
+            return await _context.Documents.ToListAsync();
         }
 
-        // GET: api/TreeDocuments/5
+        // GET: api/Documents/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TreeDocument>> GetTreeDocument(long id)
+        public async Task<ActionResult<Document>> GetDocument(long id)
         {
-            var treeDocument = await _context.TreeDocuments.FindAsync(id);
+            var treeDocument = await _context.Documents.FindAsync(id);
 
             if (treeDocument == null)
             {
@@ -42,17 +42,17 @@ namespace NoteTree.Controllers
             return treeDocument;
         }
 
-        // PUT: api/TreeDocuments/5
+        // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTreeDocument(long id, TreeDocument treeDocument)
+        public async Task<IActionResult> PutDocument(long id, Document document)
         {
-            if (id != treeDocument.Id)
+            if (id != document.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(treeDocument).State = EntityState.Modified;
+            _context.Entry(document).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace NoteTree.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TreeDocumentExists(id))
+                if (!DocumentExists(id))
                 {
                     return NotFound();
                 }
@@ -73,38 +73,38 @@ namespace NoteTree.Controllers
             return NoContent();
         }
 
-        // POST: api/TreeDocuments
+        // POST: api/Documents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TreeDocument>> PostTreeDocument(TreeDocument treeDocument)
+        public async Task<ActionResult<Document>> PostDocument(Document document)
         {
-            _context.TreeDocuments.Add(treeDocument);
+            _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetTreeDocument), new { id = treeDocument.Id }, treeDocument);
+            return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, document);
         }
 
-        // DELETE: api/TreeDocuments/5
+        // DELETE: api/Documents/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTreeDocument(long id)
+        public async Task<IActionResult> DeleteDocument(long id)
         {
-            var treeDocument = await _context.TreeDocuments.FindAsync(id);
+            var document = await _context.Documents.FindAsync(id);
             
-            if(treeDocument == null)
+            if(document == null)
             {
                 return NotFound();
             }
 
-            _context.TreeDocuments.Remove(treeDocument);
+            _context.Documents.Remove(document);
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TreeDocumentExists(long id)
+        private bool DocumentExists(long id)
         {
-            return _context.TreeDocuments.Any(e => e.Id == id);
+            return _context.Documents.Any(e => e.Id == id);
         }
     }
 }

@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteTree.Contexts;
 
 namespace NoteTree.Migrations
 {
-    [DbContext(typeof(TreeDocumentContext))]
-    [Migration("20210707021444_AddedDocTreeProp")]
-    partial class AddedDocTreeProp
+    [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,32 +22,32 @@ namespace NoteTree.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("NodeId")
+                    b.Property<long>("DocumentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long?>("ParentNodeId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("TreeDocumentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("data")
+                    b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TreeDocumentId");
+                    b.HasIndex("DocumentId");
 
                     b.ToTable("DocNodes");
                 });
 
-            modelBuilder.Entity("NoteTree.Models.TreeDocument", b =>
+            modelBuilder.Entity("NoteTree.Models.Document", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,24 +59,28 @@ namespace NoteTree.Migrations
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TreeDocuments");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("NoteTree.Models.DocNode", b =>
                 {
-                    b.HasOne("NoteTree.Models.TreeDocument", null)
+                    b.HasOne("NoteTree.Models.Document", null)
                         .WithMany("NodeList")
-                        .HasForeignKey("TreeDocumentId")
+                        .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                    b.HasOne("NoteTree.Models.DocNode", null)
+                        .WithOne()
+                        .HasForeignKey("ParentNodeId")
+                        .OnDelete(DeleteBehavior.SetNull);         
                 });
 
-            modelBuilder.Entity("NoteTree.Models.TreeDocument", b =>
+            modelBuilder.Entity("NoteTree.Models.Document", b =>
                 {
                     b.Navigation("NodeList");
                 });

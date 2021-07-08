@@ -7,13 +7,13 @@ namespace NoteTree.Models
 {
     public class DocNode
     {
+        public long Id { get; set; }
+        public long DocumentId { get; set; }
+        public long? ParentNodeId { get; set; }
+        public string Title { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
-        public long Id { get; set; }
-        public long TreeDocumentId { get; set; }
-        public long? ParentNodeId { get; set; }
-        public long NodeId { get; set; }
-        public string data { get; set; } // temp data param without any formatting
+        public string Data { get; set; } // temp data param without any formatting
 
     }
 }

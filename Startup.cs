@@ -34,7 +34,7 @@ namespace NoteTree
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NoteTree", Version = "v1" });
             });
-            services.AddDbContext<TreeDocumentContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
         }

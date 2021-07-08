@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace NoteTree.Contexts
 {
-    public class TreeDocumentContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public TreeDocumentContext(DbContextOptions<TreeDocumentContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        public DbSet<TreeDocument> TreeDocuments { get; set; }
+        public DbSet<Document> Documents { get; set; }
         public DbSet<DocNode> DocNodes { get; set; }
     }
 }

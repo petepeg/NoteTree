@@ -14,9 +14,9 @@ namespace NoteTree.Controllers
     [ApiController]
     public class DocNodesController : ControllerBase
     {
-        private readonly TreeDocumentContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DocNodesController(TreeDocumentContext context)
+        public DocNodesController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -43,10 +43,10 @@ namespace NoteTree.Controllers
         }
 
         // GET: api/DocNodes/DocId/5
-        [HttpGet("DocId/{treeDocumentId}")]
-        public async Task<ActionResult<IEnumerable<DocNode>>> GetDocNodes(long treeDocumentId)
+        [HttpGet("DocId/{documentId}")]
+        public async Task<ActionResult<IEnumerable<DocNode>>> GetDocNodes(long documentId)
         {
-            return await _context.DocNodes.Where(x => x.TreeDocumentId == treeDocumentId).ToListAsync();
+            return await _context.DocNodes.Where(x => x.DocumentId == documentId).ToListAsync();
         }
 
         // PUT: api/DocNodes/5
