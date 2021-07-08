@@ -13,6 +13,12 @@ namespace NoteTree.Models
         public string Title { get; set; }
         public List<DocNode> NodeList { get; set; }
 
+        public Document()
+        {
+            DateCreated = DateTime.Now;
+            DateModified = DateTime.Now;
+            Title = "New Document";
+        }
 
 
     }

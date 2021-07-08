@@ -75,10 +75,16 @@ namespace NoteTree.Controllers
 
         // POST: api/Documents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST will create and empty document with a single root node
         [HttpPost]
-        public async Task<ActionResult<Document>> PostDocument(Document document)
+        public async Task<ActionResult<Document>> PostDocument()
         {
+            var document = new Document();
             _context.Documents.Add(document);
+            await _context.SaveChangesAsync();
+
+            var docNode = new DocNode(document.Id, null);
+            _context.DocNodes.Add(docNode);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, document);
