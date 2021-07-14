@@ -25,6 +25,7 @@ namespace NoteTree.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
         {
+            // this will eventully be used return a list of all documents owner by a user. Nodelist can be left null.
             return await _context.Documents.ToListAsync();
         }
 
@@ -47,6 +48,7 @@ namespace NoteTree.Controllers
 
         // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // At the moment this really just changes the title. Title and Id are the only required feilds.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDocument(long id, Document data) 
         {
@@ -61,6 +63,12 @@ namespace NoteTree.Controllers
             if (data.NodeList != null)
             {
                 return BadRequest("Use node endpoints to add/modify nodes");
+            }
+
+
+            if (data.Title == null)
+            {
+                return BadRequest("New Title Required");
             }
 
             _context.Entry(document).State = EntityState.Modified; // starts context tracking and  marks all feilds as modified t obe updated on nsave
