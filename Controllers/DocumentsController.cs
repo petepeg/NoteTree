@@ -25,6 +25,7 @@ namespace NoteTree.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
         {
+            // this will eventully be used return a list of all documents owner by a user. Nodelist can be left null.
             return await _context.Documents.ToListAsync();
         }
 
@@ -32,27 +33,47 @@ namespace NoteTree.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Document>> GetDocument(long id)
         {
-            var treeDocument = await _context.Documents.FindAsync(id);
+            var document = await _context.Documents.FindAsync(id);
+            document.NodeList = await _context.DocNodes
+                .Where(n => n.DocumentId == id)
+                .ToListAsync();
 
-            if (treeDocument == null)
+            if (document == null)
             {
                 return NotFound();
             }
 
-            return treeDocument;
+            return document;
         }
 
         // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // At the moment this really just changes the title. Title and Id are the only required feilds.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocument(long id, Document document)
+        public async Task<IActionResult> PutDocument(long id, Document data) 
         {
-            if (id != document.Id)
+
+            var document = await _context.Documents.FindAsync(id);
+
+            if (data.Id != id)
             {
-                return BadRequest();
+                return BadRequest("id in data must match endpoint id");
             }
 
-            _context.Entry(document).State = EntityState.Modified;
+            if (data.NodeList != null)
+            {
+                return BadRequest("Use node endpoints to add/modify nodes");
+            }
+
+
+            if (data.Title == null)
+            {
+                return BadRequest("New Title Required");
+            }
+
+            _context.Entry(document).State = EntityState.Modified; // starts context tracking and  marks all feilds as modified t obe updated on nsave
+            document.Title = data.Title;
+            document.DateModified = DateTime.Now;
 
             try
             {
@@ -80,6 +101,10 @@ namespace NoteTree.Controllers
         public async Task<ActionResult<Document>> PostDocument()
         {
             var document = new Document();
+            document.Title = "New Document";
+            document.DateCreated = DateTime.Now;
+            document.DateModified = DateTime.Now;
+
             _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
