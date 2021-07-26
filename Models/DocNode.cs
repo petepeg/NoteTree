@@ -15,14 +15,7 @@ namespace NoteTree.Models
         public DateTime DateModified { get; set; }
         public string Data { get; set; } // temp data param without any formatting
 
-        public DocNode()
-        {
-            this.DateCreated = DateTime.Now;
-            this.DateModified = DateTime.Now;
-            this.Title = "New Node";
-        }
         public DocNode(long documentId, long? parentNodeId)
-            : this()
         {
             this.DocumentId = documentId;
             this.ParentNodeId = parentNodeId;

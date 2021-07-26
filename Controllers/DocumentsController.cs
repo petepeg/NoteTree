@@ -100,15 +100,22 @@ namespace NoteTree.Controllers
         [HttpPost]
         public async Task<ActionResult<Document>> PostDocument()
         {
-            var document = new Document();
-            document.Title = "New Document";
-            document.DateCreated = DateTime.Now;
-            document.DateModified = DateTime.Now;
+            var document = new Document
+            {
+                Title = "New Document",
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
+            };
 
             _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
-            var docNode = new DocNode(document.Id, null);
+            var docNode = new DocNode(document.Id, null)
+            {
+                Title = "New Node",
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
+            };
             _context.DocNodes.Add(docNode);
             await _context.SaveChangesAsync();
 

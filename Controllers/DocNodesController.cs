@@ -22,14 +22,14 @@ namespace NoteTree.Controllers
         }
 
         // GET: api/DocNodes
-        [HttpGet]
+        [HttpGet("/getAll")]
         public async Task<ActionResult<IEnumerable<DocNode>>> GetDocNodes()
         {
             return await _context.DocNodes.ToListAsync();
         }
 
         // GET: api/DocNodes/5
-        [HttpGet("{id}")]
+        [HttpGet("/getById/{id}")]
         public async Task<ActionResult<DocNode>> GetDocNode(long id)
         {
             var docNode = await _context.DocNodes.FindAsync(id);
@@ -43,13 +43,13 @@ namespace NoteTree.Controllers
         }
 
         // GET: api/DocNodes/DocId/5
-        [HttpGet("DocId/{documentId}")]
+        [HttpGet("/getByDocId/{documentId}")]
         public async Task<ActionResult<IEnumerable<DocNode>>> GetDocNodes(long documentId)
         {
             return await _context.DocNodes.Where(x => x.DocumentId == documentId).ToListAsync();
         }
 
-        // PUT: api/DocNodes/5
+/*        // PUT: api/DocNodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDocNode(long id, DocNode docNode)
@@ -78,13 +78,24 @@ namespace NoteTree.Controllers
             }
 
             return NoContent();
-        }
+        }*/
 
         // POST: api/DocNodes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<DocNode>> PostDocNode(DocNode docNode)
+        [HttpPost("/add/{documentId}")]
+        public async Task<ActionResult<DocNode>> PostDocNode(int documentId, int? parentNodeId)
         {
+            if (parentNodeId == null)
+            {
+                return BadRequest("Parent id required");
+            }
+
+            var docNode = new DocNode(documentId, parentNodeId)
+            {
+                Title = "New Node",
+                DateCreated = DateTime.Now,
+                DateModified = DateTime.Now
+            };
             _context.DocNodes.Add(docNode);
             await _context.SaveChangesAsync();
 
@@ -96,11 +107,31 @@ namespace NoteTree.Controllers
         public async Task<IActionResult> DeleteDocNode(long id)
         {
             var docNode = await _context.DocNodes.FindAsync(id);
+
             if (docNode == null)
             {
                 return NotFound();
             }
+            if (docNode.ParentNodeId == null)
+            {
+                return BadRequest("Cannot Delete Root Node");
+            }
 
+            var parentNode = await _context.DocNodes.FindAsync(docNode.ParentNodeId);
+            var childrenNodes = await _context.DocNodes
+                .Where(n => n.DocumentId == docNode.DocumentId)
+                .Where(n => n.ParentNodeId == id)
+                .ToListAsync();
+
+
+            _context.Entry(parentNode).State = EntityState.Unchanged;
+            // Update all orphaned children to point to grandparent
+            foreach (var node in childrenNodes)
+            {
+                _context.Entry(node).State = EntityState.Modified;
+                node.ParentNodeId = parentNode.Id;
+                node.DateModified = DateTime.Now;
+            }
             _context.DocNodes.Remove(docNode);
             await _context.SaveChangesAsync();
 
