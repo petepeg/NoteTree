@@ -65,7 +65,6 @@ namespace NoteTree.Controllers
                 return BadRequest("Use node endpoints to add/modify nodes");
             }
 
-
             if (data.Title == null)
             {
                 return BadRequest("New Title Required");

@@ -49,17 +49,35 @@ namespace NoteTree.Controllers
             return await _context.DocNodes.Where(x => x.DocumentId == documentId).ToListAsync();
         }
 
-/*        // PUT: api/DocNodes/5
+        // PUT: api/DocNodes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocNode(long id, DocNode docNode)
+        [HttpPut("/editNode/{id}")]
+        public async Task<IActionResult> EditDocNode(long id, DocNode data)
         {
-            if (id != docNode.Id)
+            if (id != data.Id)
             {
-                return BadRequest();
+                return BadRequest("id in data must match endpoint id");
+            }
+            if (!DocNodeExists(id))
+            {
+                return NotFound();
+            }
+
+            var docNode = await _context.DocNodes.FindAsync(id);
+            
+            
+            if(data.ParentNodeId != docNode.ParentNodeId) // parent node is being changed
+            {
+                if (data.ParentNodeId == null || docNode.ParentNodeId == null) return BadRequest("Cannot change root. Null is reserved for root node.");
+                if (data.ParentNodeId == docNode.Id) return BadRequest("Node can't be it's own parent");
+                if (!DocNodeExists(data.ParentNodeId)) return BadRequest("Parent Node Does Not Exist");
             }
 
             _context.Entry(docNode).State = EntityState.Modified;
+            docNode.Data = data.Data;
+            docNode.Title = data.Title;
+            docNode.DateModified = DateTime.Now;
+            docNode.ParentNodeId = data.ParentNodeId;
 
             try
             {
@@ -67,18 +85,11 @@ namespace NoteTree.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DocNodeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
-        }*/
+        }
 
         // POST: api/DocNodes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -138,8 +149,12 @@ namespace NoteTree.Controllers
             return NoContent();
         }
 
-        private bool DocNodeExists(long id)
+        private bool DocNodeExists(long? id)
         {
+            if (id == null)
+            {
+                return true;
+            }
             return _context.DocNodes.Any(e => e.Id == id);
         }
     }
