@@ -1,50 +1,90 @@
 const URI = 'https://localhost:44308'
 
 export const getAll = async () => {
-    const response = await fetch(URI + '/getAll' )
-    const responseJSON = await response.json()
-    console.log(responseJSON)
-    return responseJSON
+    await fetch(URI + '/getAll').then(async (res) => {
+        if (res.ok) {
+            const response = await res.json()
+            console.log(response)
+            return response
+        } else {
+            return {}
+        }
+    }).catch((error) => {
+        console.warn(error)
+        return {}
+    })
 }
 
 export const getNodeById = async (id) => {
-    const response = await fetch(URI + '/getById/' + id )
-    const responseJSON = await response.json()
-    console.log(responseJSON)
-    return responseJSON
+    await fetch(URI + '/getById/' + id).then(async (res) => {
+        if (res.ok) {
+            const response = await res.json()
+            console.log(response)
+            return response
+        } else {
+            return {}
+        }
+    }).catch((error) => {
+        console.warn(error)
+        return {}
+    })
 }
 
+
 export const getTreeByDocId = async (id) => {
-    const response = await fetch(URI + '/getByDocId/' + id )
-    const responseJSON = await response.json()
-    console.log(responseJSON)
-    return responseJSON
+    await fetch(URI + '/getByDocId/' + id).then(async (res) => {
+        if (res.ok) {
+            const response = await res.json()
+            console.log(response)
+            return response
+        } else {
+            return {}
+        }
+    }).catch((error) => {
+        console.warn(error)
+        return {}
+    })
 }
 
 export const editNode = async (data) => {
     await fetch(URI + '/editNode/' + data.id, {
-        headers: {'Content-Type': 'application/json',},
+        headers: { 'Content-Type': 'application/json', },
         method: "PUT",
         body: JSON.stringify(data)
+    }).then( async (res) => {
+        return {'status': res.status}
+    }).catch((error) => {
+        console.warn(error)
+        return {'error': error.message}
     })
-    return null
 }
 
-
-// TEST THIS
 export const addNode = async (data) => {
-    const response = await fetch(URI + '/add/' + data.documentId, {
-        headers: {'Content-Type': 'application/json',},
+    await fetch(URI + '/add/' + data.documentId, {
+        headers: { 'Content-Type': 'application/json', },
         method: "POST",
         body: JSON.stringify(data)
+    }).then(async (res) => {
+        if (res.ok) {
+            const response = await res.json()
+            console.log(response)
+            return response
+        } else {
+            return {}
+        }
+    }).catch((error) => {
+        console.warn(error)
+        return {}
     })
-    return response
 }
 
-// TEST THIS
 export const deleteNode = async (id) => {
-    const response = await fetch(URI + '/api/DocNodes/' + id, {
+    await fetch(URI + '/api/DocNodes/' + id, {
         method: "DELETE"
+    }).then( async (res) => {
+        return {'status': res.status}
+    }).catch((error) => {
+        console.warn(error)
+        return {'error': error.message}
     })
-    return response
 }

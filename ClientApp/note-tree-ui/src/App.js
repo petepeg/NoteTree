@@ -5,7 +5,7 @@ import { getTreeByDocId, getNodeById, getAll, editNode } from './external-api-fu
 
 function App() {
   const handleCreateDocument = () => {
-    createDocument()
+    console.log(createDocument())
   }
   const handleGetDocumentById = () => {
     getDocumentById('2')
